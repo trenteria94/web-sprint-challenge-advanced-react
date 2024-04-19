@@ -23,21 +23,21 @@ export default function AppFunctional(props) {
     // It's enough to know what index the "B" is at, to be able to calculate them.
     //[ 0, 1, 2
     //  3, 4, 5
-    //  6, 7, 8 3] Modulo is 'x' coordinate Division is 'y' coordinate Divide by 3x3 cube
+    //  6, 7, 8 3] Division is 'x' coordinate && Modulo is 'y' coordinate Use 3x3 cube
     if (index % 3 === 0) {
-      xCoord = 1
+      yCoord = 1
     } else if (index % 3 === 1) {
-      xCoord = 2
+      yCoord = 2
     } else if (index % 3 === 2) {
-      xCoord = 3
+      yCoord = 3
     }
 
     if (Math.floor(index / 3) === 0) {
-      yCoord = 1
+      xCoord = 1
     } else if (Math.floor(index / 3) === 1) {
-      yCoord = 2
+      xCoord = 2
     } else if (Math.floor(index / 3) === 2) {
-      yCoord = 3
+      xCoord = 3
     }
     return [xCoord, yCoord]
   } 
@@ -94,7 +94,14 @@ export default function AppFunctional(props) {
     // and change any states accordingly.
     const { id } = evt.target
     const nextIndex = getNextIndex(id)
+    if (index === nextIndex) {
+    setMessage(`You can't go ${id}`) 
+    setSteps(steps)
+    } else{
+    setMessage(initialMessage)
     setIndex(nextIndex)
+    setSteps(steps + 1)
+    }
   }
 
   function onChange(evt) {
@@ -109,7 +116,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved 0 times</h3>
+        <h3 id="steps">You moved {steps} times</h3>
       </div>
       <div id="grid">
         {
@@ -121,7 +128,7 @@ export default function AppFunctional(props) {
         }
       </div>
       <div className="info">
-        <h3 id="message"></h3>
+        <h3 id="message">{message}</h3>
       </div>
       <div id="keypad">
         <button onClick={move} id="left">LEFT</button>
