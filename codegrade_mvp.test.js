@@ -14,7 +14,7 @@ let up, down, left, right, reset, submit
 let squares, coordinates, steps, message, email
 
 const updateStatelessSelectors = document => {
-  up = document.querySelector('#up')
+  up = document.querySelector('#up') 
   down = document.querySelector('#down')
   left = document.querySelector('#left')
   right = document.querySelector('#right')
