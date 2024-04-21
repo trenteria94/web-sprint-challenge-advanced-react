@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
+const URL = 'http://localhost:9000/api/result'
 // Suggested initial states
 const initialMessage = ''
 const initialEmail = ''
@@ -25,19 +27,19 @@ export default function AppFunctional(props) {
     //  3, 4, 5
     //  6, 7, 8 3] Division is 'x' coordinate && Modulo is 'y' coordinate Use 3x3 cube
     if (index % 3 === 0) {
-      yCoord = 1
+      xCoord = 1
     } else if (index % 3 === 1) {
-      yCoord = 2
+      xCoord = 2
     } else if (index % 3 === 2) {
-      yCoord = 3
+      xCoord = 3
     }
 
     if (Math.floor(index / 3) === 0) {
-      xCoord = 1
+      yCoord = 1
     } else if (Math.floor(index / 3) === 1) {
-      xCoord = 2
+      yCoord = 2
     } else if (Math.floor(index / 3) === 2) {
-      xCoord = 3
+      yCoord = 3
     }
     return [xCoord, yCoord]
   } 
@@ -106,9 +108,25 @@ export default function AppFunctional(props) {
 
   function onChange(evt) {
     // You will need this to update the value of the input.
+    const { value } = evt.target
+    setEmail(value)
+
   }
 
   function onSubmit(evt) {
+    evt.preventDefault()
+    const [ x, y ] = getXY()
+    axios.post(URL, { x: `${x}`, y: `${y}`, steps: steps, email: email })
+        .then(res => {
+          setMessage(res.data.message)
+          setEmail('')
+        })
+        .catch(err =>{
+          setMessage(err.response.data.message)
+          setEmail('')        
+        })
+
+        
     // Use a POST request to send a payload to the server.
   }
 
@@ -116,7 +134,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">{getXYMessage()}</h3>
-        <h3 id="steps">You moved {steps} times</h3>
+        <h3 id="steps">{steps === 1 ? `You moved ${steps} time` : `You moved ${steps} times`}</h3>
       </div>
       <div id="grid">
         {
@@ -138,8 +156,8 @@ export default function AppFunctional(props) {
         <button onClick={reset} id="reset">reset</button>
       </div>
       <form>
-        <input id="email" type="email" placeholder="type email"></input>
-        <input id="submit" type="submit"></input>
+        <input onChange={onChange} id="email" type="email" placeholder="type email" value={email}></input>
+        <input onClick={onSubmit}id="submit" type="submit"></input>
       </form>
     </div>
   )
